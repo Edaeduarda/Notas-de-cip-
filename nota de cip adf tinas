@@ -1,0 +1,694 @@
+
+function media(lista) {
+    var tamanho = lista.length;
+    var soma = 0;
+    for (let i = 0; i < tamanho; i++) {
+        if (lista[i] == undefined) {
+            continue
+        }
+        soma += lista[i];
+    }
+    var calculo_media = soma / tamanho;
+    return calculo_media;
+}
+
+
+// RECEITA PERIODICO
+
+function notaGeral(receita_tinas) {
+    if (receita_tinas == 2) {
+        let nota_tempo_alcalina = flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ALCALINA');
+        let nota_concentracao_alcalina = flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ALCALINA');
+
+        let nota_tempo_sanitizante = flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_SANITIZANTE');
+        let nota_concentracao_sanitizante = flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_SANITIZANTE');
+
+        let nota_tempo_acido = flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO');
+        let note_concentracao_acido = flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO');
+
+        if (
+            nota_tempo_alcalina != 0 && nota_concentracao_alcalina != 0 &&
+            nota_tempo_sanitizante != 0 && nota_concentracao_sanitizante &&
+            nota_tempo_acido != 0 && note_concentracao_acido != 0
+        ) {
+            let media = nota_tempo_alcalina + nota_concentracao_alcalina + nota_tempo_sanitizante + nota_concentracao_sanitizante + nota_tempo_acido + note_concentracao_acido;
+            media = media / 6.0;
+            return media;
+
+        }
+        else {
+            return 0
+        }
+    }
+
+
+    // RECEITA ROTINA
+
+    else if (receita_tinas == 3) {
+
+        let nota_tempo_sanitizante = flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_SANITIZANTE');
+        let nota_concentracao_sanitizante = flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_SANITIZANTE');
+
+        let nota_tempo_acido = flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO');
+        let note_concentracao_acido = flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO');
+
+        if (
+            nota_tempo_sanitizante != 0 && nota_concentracao_sanitizante &&
+            nota_tempo_acido != 0 && note_concentracao_acido != 0
+        ) {
+            let media = nota_tempo_sanitizante + nota_concentracao_sanitizante + nota_tempo_acido + note_concentracao_acido;
+            media = media / 4.0;
+            return media;
+
+        }
+        else {
+            return 0
+        }
+    }
+
+
+    // RECEITA OPICIONAL 
+
+    else if (receita_tinas == 1) {
+
+        let nota_tempo_alcalina = flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ALCALINA');
+        let nota_concentracao_alcalina = flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ALCALINA');
+
+        let nota_tempo_acido = flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO');
+        let note_concentracao_acido = flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO');
+
+        if (
+            nota_tempo_alcalina != 0 && nota_concentracao_alcalina &&
+            nota_tempo_acido != 0 && note_concentracao_acido != 0
+        ) {
+            let media = nota_tempo_alcalina + nota_concentracao_alcalina + nota_tempo_acido + note_concentracao_acido;
+            media = media / 4.0;
+            return media;
+
+        }
+        else {
+            return 0
+        }
+    }
+}
+
+
+function notaEtapaTempo(tipo) {
+    let inicio, fim;
+    if (tipo == 'alcalina') {
+        inicio = flow.get('CIP_ADF_INICIO_ETAPA_ALCALINA');
+        fim = flow.get('CIP_ADF_FIM_ETAPA_ALCALINA');
+    }
+    else if (tipo == 'sanitizante') {
+        inicio = flow.get('CIP_ADF_INICIO_ETAPA_SANITIZANTE');
+        fim = flow.get('CIP_ADF_FIM_ETAPA_SANITIZANTE');
+    }
+
+
+    let tempo = (fim - inicio) / 60000;
+    if (tempo <= 56) {
+        return 0;
+    }
+    else if (tempo >= 56 && tempo <= 66) {
+        return 10;
+    }
+    else if (tempo > 66 && tempo <= 76) {
+        return 9;
+    }
+    else if (tempo > 76 && tempo <= 86) {
+        return 8;
+    }
+    else if (tempo > 86 && tempo <= 96) {
+        return 7;
+    }
+    else if (tempo > 96 && tempo <= 106) {
+        return 6;
+    }
+    else if (tempo > 106) {
+        return 5
+    }
+
+{
+    let inicio, fim;
+    if (tipo == 'acido') {
+        inicio = flow.get('CIP_ADF_INICIO_ETAPA_ACIDO');
+        fim = flow.get('CIP_ADF_FIM_ETAPA_ACIDO');
+    }
+    let tempo = (fim - inicio) / 60000;
+    if (tempo <= 42) {
+        return 0;
+    }
+    else if (tempo >= 42 && tempo <= 52) {
+        return 10;
+    }
+    else if (tempo > 52 && tempo <= 62) {
+        return 9;
+    }
+    else if (tempo > 62 && tempo <= 72) {
+        return 8;
+    }
+    else if (tempo > 72 && tempo <= 82) {
+        return 7;
+    }
+    else if (tempo > 82 && tempo <= 92) {
+        return 6;
+    }
+    else if (tempo > 92) {
+        return 5
+    }
+     
+}
+}
+
+function notaEtapaConcentracao(tipo) {
+    if (tipo == 'alcalina') {
+        let media = flow.get('CIP_ADF_MEDIA_ALCALINA');
+        if (media <= 115) {
+            return 0;
+        }
+        else if (media >= 115 && media <= 120) {
+            return 10;
+        }
+        else if (media > 125 && media <= 130) {
+            return 9;
+        }
+        else if (media > 130 && media <= 135) {
+            return 8;
+        }
+        else if (media > 135 && media <= 140) {
+            return 7;
+        }
+        else if (media > 140 && media <= 145) {
+            return 6;
+        }
+        else if (media > 145) {
+            return 5
+        }
+    }
+
+    else if (tipo == 'acido') {
+        let media = flow.get('CIP_ADF_MEDIA_ACIDO');
+        if (media <= 82) {
+            return 0;
+        }
+        else if (media >= 82 && media <= 85) {
+            return 10;
+        }
+        else if (media > 88 && media <= 91) {
+            return 9;
+        }
+        else if (media > 94 && media <= 97) {
+            return 8;
+        }
+        else if (media > 100 && media <= 103) {
+            return 7;
+        }
+        else if (media > 106 && media <= 109) {
+            return 6;
+        }
+        else if (media > 112) {
+            return 5
+        }
+    }
+
+    else if (tipo == 'sanitizante') {
+        let media = flow.get('CIP_ADF_MEDIA_SANITIZANTE');
+        if (media <= 2.5) {
+            return 0;
+        }
+        else if (media >= 2.5 && media <= 3) {
+            return 10;
+        }
+        else if (media > 3 && media <= 3.5) {
+            return 9;
+        }
+        else if (media > 3.5 && media <= 4) {
+            return 8;
+        }
+        else if (media > 4 && media <= 4.5) {
+            return 7;
+        }
+        else if (media > 4.5 && media <= 5) {
+            return 6;
+        }
+        else if (media > 5) {
+            return 5
+        }
+    }
+}
+
+
+
+/*
+        CIP PERIODICO
+        
+*/
+
+
+// INICIO CIRCULAÇÃO ALCALINA CIP PERIODICO
+if (flow.get('CIP_PASSO_TINAS') == 2 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_ALCALINA_INICIADA') != true) {
+    flow.set('CIP_ADF_ETAPA_ALCALINA_INICIADA', true);
+    flow.set('CIP_ADF_INICIO_ETAPA_ALCALINA', Date.now());
+}
+
+
+// LISTA CONCENTRAÇÃO ALCALINA CIP PERIODICO
+
+if (flow.get('CIP_PASSO_TINAS') == 2 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_ALCALINA_INICIADA') == true) {
+
+    let lista_concentracao = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_PERIODICO');
+
+    if (lista_concentracao == [] || lista_concentracao == undefined) {
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_PERIODICO', [flow.get('CIP_ADF_CONCENTRACAO')]);
+    }
+    else {
+        lista_concentracao.push(flow.get('CIP_CONCENTRACAO_TINAS'))
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_PERIODICO', lista_concentracao);
+    }
+    msg.payload = {
+        condutividade: flow.get('CIP_CONCENTRACAO_TINAS'),
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        etapa: "alcalina"
+    }
+    return msg;
+}
+
+// FIM CIRCULAÇÃO ALCALINA CIP PERIODICO
+if (flow.get('CIP_PASSO_TINAS') == 3 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_ALCALINA_INICIADA') == true) {
+    flow.set('CIP_ADF_ETAPA_ALCAILNA_INICIADA', false);
+    flow.set('CIP_ADF_FIM_ETAPA_ALCALINA', Date.now());
+    let lista = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_PERIODICO')
+    flow.set('CIP_ADF_MEDIA_ALCALINA', media(lista));
+    flow.set('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_PERIODICO', []);
+
+     // NOTA
+    flow.set('CIP_ADF_NOTA_ETAPA_TEMPO_ALCALINA', notaEtapaTempo("alcalina"));
+    flow.set('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ALCALINA', notaEtapaConcentracao("alcalina"));
+
+    let inicio = flow.get('CIP_ADF_INICIO_ETAPA_ALCALINA');
+    let fim = flow.get('CIP_ADF_FIM_ETAPA_ALCALINA');
+    let tempo = (fim - inicio)/60000;
+    
+    msg.payload = {
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        notaTempoAlcalina: flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ALCALINA'),
+        notaConcentracaoAlcalina: flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ALCALINA'),
+        tempo: tempo,
+        etapa: "alcalina",
+        passo: flow.get('CIP_PASSO_TINAS'),
+        receita_tinas: flow.get('CIP_RECEITA_TINAS'),
+        media: media(lista),
+       
+    }
+    return msg;
+
+}
+
+
+// INICIO CIRCULAÇÃO ACIDO CIP PERIODICO
+if (flow.get('CIP_PASSO_TINAS') == 4 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA') != true) {
+    flow.set('CIP_ADF_ETAPA_ACIDO_INICIADA', true);
+    flow.set('CIP_ADF_INICIO_ETAPA_ACIDO', Date.now());
+}
+
+
+// LISTA CONCENTRAÇÃO ACIDO CIP PERIODICO
+
+if (flow.get('CIP_PASSO_TINAS') == 4 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA') == true) {
+
+    let lista_concentracao = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_PERIODICO');
+
+    if (lista_concentracao == [] || lista_concentracao == undefined) {
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_PERIODICO', [flow.get('CIP_CONCENTRACAO_TINAS')]);
+    }
+    else {
+        lista_concentracao.push(flow.get('CIP_CONCENTRACAO_TINAS'))
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_PERIODICO', lista_concentracao);
+    }
+
+    msg.payload = {
+        condutividade: flow.get('CIP_CONCENTRACAO_TINAS'),
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        etapa: "acido"
+    }
+    return msg;
+}
+
+// FIM CIRCULAÇÃO ACIDO CIP PERIODICO
+if (flow.get('CIP_PASSO_TINAS') == 5 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA') == true) {
+    flow.set('CIP_ADF_ETAPA_ACIDO_INICIADA', false);
+    flow.set('CIP_ADF_FIM_ETAPA_ACIDO', Date.now());
+    let lista = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_PERIODICO')
+    flow.set('CIP_ADF_MEDIA_ACIDO', media(lista));
+    flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_PERIODICO', []);
+
+    // NOTA
+    flow.set('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO', notaEtapaTempo("acido"));
+    flow.set('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO', notaEtapaConcentracao("acido"));
+
+    let inicio = flow.get('CIP_ADF_INICIO_ETAPA_ACIDO');
+    let fim = flow.get('CIP_ADF_FIM_ETAPA_ACIDO');
+    let tempo = (fim - inicio)/60000;
+
+    msg.payload = {
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        notaTempoAcido: flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO'),
+        notaConcentracaoAcido: flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO'),
+        tempo: tempo,
+        etapa: "acido",
+        passo: flow.get('CIP_PASSO_TINAS'),
+        receita_tinas: flow.get('CIP_RECEITA_TINAS'),
+        media: media(lista),
+       
+    }
+    return msg;
+
+}
+
+// INICIO CIRCULAÇÃO SANITIZANTE CIP PERIODICO
+if (flow.get('CIP_PASSO_TINAS') == 6 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_SANITIZANTE_INICIADA') != true) {
+    flow.set('CIP_ADF_ETAPA_SANITIZANTE_INICIADA', true);
+    flow.set('CIP_ADF_INICIO_ETAPA_SANITIZANTE', Date.now());
+}
+
+
+// LISTA CONCENTRAÇÃO SANITIZANTE CIP PERIODICO
+
+if (flow.get('CIP_PASSO_TINAS') == 6 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_SANITIZANTE_INICIADA') == true) {
+
+    let lista_concentracao = flow.get('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_PERIODICO');
+
+    if (lista_concentracao == [] || lista_concentracao == undefined) {
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_PERIODICO', [flow.get('CIP_ADF_CONCENTRACAO')]);
+    }
+    else {
+        lista_concentracao.push(flow.get('CIP_CONCENTRACAO_TINAS'))
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_PERIODICO', lista_concentracao);
+    }
+
+    msg.payload = {
+        condutividade: flow.get('CIP_CONCENTRACAO_TINAS'),
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        etapa: "sanitizante"
+    }
+    return msg;
+}
+
+// FIM CIRCULAÇÃO SANITIZANTE CIP PERIODICO
+if (flow.get('CIP_PASSO_TINAS') == 7 && flow.get('CIP_RECEITA_TINAS') == 2 && flow.get('CIP_ADF_ETAPA_SANITIZANTE_INICIADA') == true) {
+    flow.set('CIP_ADF_ETAPA_SANITIZANTE_INICIADA', false);
+    flow.set('CIP_ADF_FIM_ETAPA_SANITIZANTE', Date.now());
+    let lista = flow.get('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_PERIODICO')
+    flow.set('CIP_ADF_MEDIA_SANITIZANTE', media(lista));
+    flow.set('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_PERIODICO', []);
+    flow.set('NOTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_PERIODICO')
+
+    // NOTA
+    flow.set('CIP_ADF_NOTA_ETAPA_TEMPO_SANITIZANTE', notaEtapaTempo('sanitizante'));
+    flow.set('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_SANITIZANTE', notaEtapaConcentracao('sanitizante'));
+
+    // NOTA GERAL
+    flow.set('NOTA_TINAS', notaGeral(flow.get('CIP_RECEITA_TINAS')));
+
+    let inicio = flow.get('CIP_ADF_INICIO_ETAPA_SANITIZANTE');
+    let fim = flow.get('CIP_ADF_FIM_ETAPA_SANITIZANTE');
+    let tempo = (fim - inicio)/60000;
+
+
+    msg.payload = {
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        notaTempoSanitizante: flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_SANITIZANTE'),
+        notaConcentracaoSanitizante: flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_SANITIZANTE'),
+        notaGeral: flow.get('NOTA_TINAS'),
+        tempo: tempo,
+        etapa: "sanitizante",
+        passo: flow.get('CIP_PASSO_TINAS'),
+        receita_tinas: flow.get('CIP_RECEITA_TINAS'),
+        media: media(lista)
+    }
+    return msg;
+
+
+}
+
+
+/*
+    CIP ROTINA
+    
+*/
+
+
+// INICIO CIRCULAÇÃO ACIDO CIP ROTINA
+if (flow.get('CIP_PASSO_TINAS') == 4 && flow.get('CIP_RECEITA_TINAS') == 3 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA') != true) {
+    flow.set('CIP_ADF_ETAPA_ACIDO_INICIADA', true);
+    flow.set('CIP_ADF_INICIO_ETAPA_ACIDO', Date.now());
+}
+
+
+// LISTA CONCENTRAÇÃO ACIDO CIP ROTINA
+
+if (flow.get('CIP_PASSO_TINAS') == 4 && flow.get('CIP_RECEITA_TINAS') == 3 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA') == true) {
+
+    let lista_concentracao = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_ROTINA');
+
+    if (lista_concentracao == [] || lista_concentracao == undefined) {
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_ROTINA', [flow.get('CIP_CONCENTRACAO_TINAS')]);
+    }
+    else {
+        lista_concentracao.push(flow.get('CIP_CONCENTRACAO_TINAS'))
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_ROTINA', lista_concentracao);
+    }
+
+    msg.payload = {
+        condutividade: flow.get('CIP_CONCENTRACAO_TINAS'),
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        etapa: "acido"
+    }
+    return msg;
+}
+
+// FIM CIRCULAÇÃO ACIDO CIP ROTINA
+if (flow.get('CIP_PASSO_TINAS') == 5 && flow.get('CIP_RECEITA_TINAS') == 3 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA') == true) {
+    flow.set('CIP_ADF_ETAPA_ACIDO_INICIADA', false);
+    flow.set('CIP_ADF_FIM_ETAPA_ACIDO', Date.now());
+    let lista = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_ROTINA')
+    flow.set('CIP_ADF_MEDIA_ACIDO', media(lista));
+    flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_ROTINA', []);
+
+    // NOTA
+    flow.set('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO', notaEtapaTempo('acido'))
+    flow.set('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO', notaEtapaConcentracao('acido'));
+
+    let inicio = flow.get('CIP_ADF_INICIO_ETAPA_ACIDO');
+    let fim = flow.get('CIP_ADF_FIM_ETAPA_ACIDO');
+    let tempo = (fim - inicio)/60000;
+
+
+    msg.payload = {
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        notaTempoAcido: flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO'),
+        notaConcentracaoAcido: flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO'),
+        tempo: tempo,
+        etapa: "acido",
+        passo: flow.get('CIP_PASSO_TINAS'),
+        receita_tinas: flow.get('CIP_RECEITA_TINAS'),
+        media: media(lista)
+    }
+    return msg;
+
+}
+
+// INICIO CIRCULAÇÃO SANITIZANTE CIP ROTINA
+if (flow.get('CIP_PASSO_TINAS') == 6 && flow.get('CIP_RECEITA_TINAS') == 3 && flow.get('CIP_ADF_ETAPA_SANITIZANTE_INICIADA') != true) {
+    flow.set('CIP_ADF_ETAPA_SANITIZANTE_INICIADA', true);
+    flow.set('CIP_ADF_INICIO_ETAPA_SANITIZANTE', Date.now());
+}
+
+
+// LISTA CONCENTRAÇÃO SANITIZANTE CIP ROTINA
+
+if (flow.get('CIP_PASSO_TINAS') == 6 && flow.get('CIP_RECEITA_TINAS') == 3 && flow.get('CIP_ADF_ETAPA_SANITIZANTE_INICIADA') == true) {
+
+    let lista_concentracao = flow.get('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_ROTINA');
+
+    if (lista_concentracao == [] || lista_concentracao == undefined) {
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_ROTINA', [flow.get('CIP_ADF_CONCENTRACAO')]);
+    }
+    else {
+        lista_concentracao.push(flow.get('CIP_CONCENTRACAO_TINAS'))
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_ROTINA', lista_concentracao);
+    }
+    msg.payload = {
+        condutividade: flow.get('CIP_CONCENTRACAO_TINAS'),
+        tinas: flow.get('CIP_PASSO_TINAS'),
+        etapa: "sanitizante"
+    }
+    return msg;
+}
+
+// FIM CIRCULAÇÃO SANITIZANTE CIP ROTINA
+if (flow.get('CIP_PASSO_TINAS') == 7 && flow.get('CIP_RECEITA_TINAS') == 3 && flow.get('CIP_ADF_ETAPA_SANITIZANTE_INICIADA')) {
+    flow.set('CIP_ADF_ETAPA_SANITIZANTE_INICIADA', false);
+    flow.set('CIP_ADF_FIM_ETAPA_SANITIZANTE', Date.now());
+    let lista = flow.get('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_ROTINA')
+    flow.set('CIP_ADF_MEDIA_SANITIZANTE', media(lista));
+    flow.set('LISTA_CIP_ADF_CONCENTRACAO_SANITIZANTE_ROTINA', []);
+
+    // NOTA
+    flow.set('CIP_ADF_NOTA_ETAPA_TEMPO_SANITIZANTE', notaEtapaTempo('sanitizante'));
+    flow.set('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_SANITIZANTE', notaEtapaConcentracao('sanitizante'));
+
+    // NOTA GERAL
+    flow.set('NOTA_TINAS', notaGeral(flow.get('CIP_RECEITA_TINAS')));
+
+    let inicio = flow.get('CIP_ADF_INICIO_ETAPA_SANITIZANTE');
+    let fim = flow.get('CIP_ADF_FIM_ETAPA_SANITIZANTE');
+    let tempo = (fim - inicio)/60000;
+
+
+    msg.payload = {
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        notaTempoSanitizante: flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_SANITIZANTE'),
+        notaConcentracaoSanitizante: flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_SANITIZANTE'),
+        notaGeral: flow.get('NOTA_TINAS'),
+        tempo: tempo,
+        etapa: "sanitizante",
+        passo: flow.get('CIP_PASSO_TINAS'),
+        receita_tinas: flow.get('CIP_RECEITA_TINAS'),
+        media: media(lista)
+
+    }
+    return msg;
+}
+
+/*
+    CIP OPICIONAL 
+    
+*/
+
+
+// INICIO CIRCULAÇÃO ALCALINA CIP OPICIONAL
+if (flow.get('CIP_PASSO_TINAS') == 2 && flow.get('CIP_RECEITA_TINAS') == 1 && flow.get('CIP_ADF_ETAPA_ALCALINA_INICIADA') != true) {
+    flow.set('CIP_ADF_ETAPA_ALCALINA_INICIADA', true);
+    flow.set('CIP_ADF_INICIO_ETAPA_ALCALINA', Date.now());
+}
+
+
+// LISTA CONCENTRAÇÃO ALCALINA CIP OPICIONAL 
+
+if (flow.get('CIP_PASSO_TINAS') == 2 && flow.get('CIP_RECEITA_TINAS') == 1 && flow.get('CIP_ADF_ETAPA_ALCALINA_INICIADA') == true) {
+
+    let lista_concentracao = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_OPICIONAL');
+
+    if (lista_concentracao == [] || lista_concentracao == undefined) {
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_OPICIONAL', [flow.get('CIP_CONCENTRACAO_TINAS')]);
+    }
+    else {
+        lista_concentracao.push(flow.get('CIP_CONCENTRACAO_TINAS'))
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_OPICIONAL', lista_concentracao);
+    }
+
+    msg.payload = {
+        condutividade: flow.get('CIP_CONCENTRACAO_TINAS'),
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        etapa: "alcalina"
+    }
+    return msg;
+}
+
+// FIM CIRCULAÇÃO ALCALINA CIP OPICIONAL
+if (flow.get('CIP_PASSO_TINAS') == 3 && flow.get('CIP_RECEITA_TINAS') == 1 && flow.get('CIP_ADF_ETAPA_ALCALINA_INICIADA') == true) {
+    flow.set('CIP_ADF_ETAPA_ALCALINA_INICIADA', false);
+    flow.set('CIP_ADF_FIM_ETAPA_ALCALINA', Date.now());
+    let lista = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_OPICIONAL')
+    flow.set('CIP_ADF_MEDIA_ALCALINO', media(lista));
+    flow.set('LISTA_CIP_ADF_CONCENTRACAO_ALCALINA_OPICIONAL', []);
+
+    // NOTA
+    flow.set('CIP_ADF_NOTA_ETAPA_TEMPO_ALCALINA', notaEtapaTempo('alcalina'))
+    flow.set('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ALCALINA', notaEtapaConcentracao('alcalina'));
+
+    let inicio = flow.get('CIP_ADF_INICIO_ETAPA_ALCALINA');
+    let fim = flow.get('CIP_ADF_FIM_ETAPA_ALCALINA');
+    let tempo = (fim - inicio)/60000;
+
+
+    msg.payload = {
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        notaTempoAlcalina: flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ALCALINA'),
+        notaConcentracaoAlcalina: flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ALCALINA'),
+        tempo: tempo,
+        etapa: "alcalina",
+        passo: flow.get('CIP_PASSO_TINAS'),
+        receita_tinas: flow.get('CIP_RECEITA_TINAS'),
+        media: media(lista)
+    }
+    return msg;
+
+}
+
+// INICIO CIRCULAÇÃO ACIDO CIP OPICIONAL 
+if (flow.get('CIP_PASSO_TINAS') == 4 && flow.get('CIP_RECEITA_TINAS') == 1 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA') != true) {
+    flow.set('CIP_ADF_ETAPA_ACIDO_INICIADA', true);
+    flow.set('CIP_ADF_INICIO_ETAPA_ACIDO', Date.now());
+}
+
+
+// LISTA CONCENTRAÇÃO ACIDO CIP OPICIONAL 
+
+if (flow.get('CIP_PASSO_TINAS') == 4 && flow.get('CIP_RECEITA_TINAS') == 1 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA') == true) {
+
+    let lista_concentracao = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_OPICIONAL');
+
+    if (lista_concentracao == [] || lista_concentracao == undefined) {
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_OPICIONAL', [flow.get('CIP_ADF_CONCENTRACAO')]);
+    }
+    else {
+        lista_concentracao.push(flow.get('CIP_CONCENTRACAO_TINAS'))
+        flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_OPICIONAL', lista_concentracao);
+    }
+    msg.payload = {
+        condutividade: flow.get('CIP_CONCENTRACAO_TINAS'),
+        tinas: flow.get('CIP_PASSO_TINAS'),
+        etapa: "sanitizante"
+    }
+    return msg;
+}
+
+// FIM CIRCULAÇÃO ACIDO CIP OPICIONAL 
+if (flow.get('CIP_PASSO_TINAS') == 5 && flow.get('CIP_RECEITA_TINAS') == 1 && flow.get('CIP_ADF_ETAPA_ACIDO_INICIADA')) {
+    flow.set('CIP_ADF_ETAPA_ACIDO_INICIADA', false);
+    flow.set('CIP_ADF_FIM_ETAPA_ACIDO', Date.now());
+    let lista = flow.get('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_OPICIONAL')
+    flow.set('CIP_ADF_MEDIA_OPICIONAL', media(lista));
+    flow.set('LISTA_CIP_ADF_CONCENTRACAO_ACIDO_OPICIONAL', []);
+
+    // NOTA
+    flow.set('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO', notaEtapaTempo('acido'));
+    flow.set('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO', notaEtapaConcentracao('acido'));
+
+    // NOTA GERAL
+    flow.set('NOTA_TINAS', notaGeral(flow.get('CIP_RECEITA_TINAS')));
+
+    let inicio = flow.get('CIP_ADF_INICIO_ETAPA_ACIDO');
+    let fim = flow.get('CIP_ADF_FIM_ETAPA_ACIDO');
+    let tempo = (fim - inicio)/60000;
+
+
+    msg.payload = {
+        tinas: flow.get('CIP_EQUIPAMENTO_TINAS'),
+        notaTempoAcido: flow.get('CIP_ADF_NOTA_ETAPA_TEMPO_ACIDO'),
+        notaConcentracaoAcido: flow.get('CIP_ADF_NOTA_ETAPA_CONCENTRACAO_ACIDO'),
+        notaGeral: flow.get('NOTA_TINAS'),
+        tempo: tempo,
+        etapa: "acido",
+        passo: flow.get('CIP_PASSO_TINAS'),
+        receita_tinas: flow.get('CIP_RECEITA_TINAS'),
+        media: media(lista)
+
+    }
+    return msg;
+}
+
+
+
